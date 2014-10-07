@@ -144,10 +144,10 @@ class Router extends IlluminateRouter
      * @return \Illuminate\Http\Response|\Dingo\Api\Http\Response
      * @throws \Exception
      */
-    public function dispatch(Request $request)
+    public function dispatch(Request $request, $runMiddleware = true)
     {
         if (! $this->requestTargettingApi($request)) {
-            return parent::dispatch($request);
+            return parent::dispatch($request, $runMiddleware);
         }
 
         list ($version, $format) = $this->parseAcceptHeader($request);
@@ -158,7 +158,7 @@ class Router extends IlluminateRouter
         $this->container->instance('Illuminate\Http\Request', $request);
 
         try {
-            $response = parent::dispatch($request);
+            $response = parent::dispatch($request, $runMiddleware);
         } catch (Exception $exception) {
             if ($request instanceof InternalRequest) {
                 throw $exception;
